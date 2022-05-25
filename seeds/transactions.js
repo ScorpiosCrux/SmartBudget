@@ -90,3 +90,7 @@ const prices = [
     '',
     '1.88',
 ]
+
+exports.dates = dates;
+exports.descriptions = descriptions;
+exports.prices = prices;
