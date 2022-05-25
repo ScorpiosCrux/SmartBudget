@@ -17,9 +17,12 @@ db.once("open", () => {
 
 const seedDB = async() => {
     await Transaction.deleteMany({}); //deletes everything
-    const numOfTransactions = 28; //num of transactions in seed data
-    for (let i = 0; i < 50; i++){
-        const random = Math.floor(Math.random()*numOfTransactions);
+
+    const numSeedTransactions = 28; //num of transactions in seed data
+    const numTransactions = 20; //num of transactions we want in the db
+
+    for (let i = 0; i < numTransactions; i++){
+        const random = Math.floor(Math.random()*numSeedTransactions);
         const newTransaction = new Transaction({
             description: transactions.descriptions[random],
             cost: transactions.prices[random],
