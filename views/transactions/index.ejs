@@ -11,7 +11,7 @@
 
     <ul>
         <% for (let transaction of transactions) {%>
-            <li><%= transaction.description %> </li>
+            <li><a href="/transactions/<%= transaction._id %>"><%= transaction.description %></a> </li>
         <% } %> 
 
     </ul>

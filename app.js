@@ -21,8 +21,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/transactions', async (req, res) => {
-    const transactions = await Transaction.find({});
-    res.render('transactions/index', {transactions} )
+    const transactions = await Transaction.find({});                // Using Transactions we look for everything
+    res.render('transactions/index', {transactions} )               // We pass transactions to the EJS template
+});
+
+
+app.get('/transactions/:id', async (req, res) => {                  // :id is the id of the transaction
+    const transaction = await Transaction.findById(req.params.id)   // Using the id, we find the transaction in the db
+    res.render('transactions/show', {transaction})
 });
 
 app.listen(3000, () => {
