@@ -9,6 +9,10 @@
 <body>
     <h1>All Transactions</h1>
 
+    <div>
+        <a href="transactions/new">Add Transaction Manually</a>
+    </div>
+    
     <ul>
         <% for (let transaction of transactions) {%>
             <li><a href="/transactions/<%= transaction._id %>"><%= transaction.description %></a> </li>

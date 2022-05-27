@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Transaction</title>
+</head>
+<body>
+    <!-- Going to /transactions after it posts -->
+    <form action="/transactions" method="POST">
+        <div>
+            <label for="description">Description:</label>
+            <!-- This input with this name allows us to group variables under "transaction" -->
+            <input type="text" id="description" name="transaction[description]">
+        </div>
+        <div>
+            <label for="cost">Cost:</label>
+            <input type="text" id="cost" name="transaction[cost]">
+        </div>
+        <button>Add Transaction</button>
+    </form> 
+    <a href="/transactions">Back</a>
+</body>
+</html>
