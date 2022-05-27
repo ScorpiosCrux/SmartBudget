@@ -20,13 +20,9 @@ app.get('/', (req, res) => {
     res.render('home')
 });
 
-app.get('/newtransaction', async (req, res) => {
-    const transaction = new Transaction({
-        description: "This is the first transaction", 
-        cost: "$4.99", 
-    });
-    await transaction.save();
-    res.send(transaction);
+app.get('/transactions', async (req, res) => {
+    const transactions = await Transaction.find({});
+    res.render('transactions/index', {transactions} )
 });
 
 app.listen(3000, () => {
