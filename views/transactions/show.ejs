@@ -13,6 +13,11 @@
 
     <footer>
         <a href="/transactions">All Transactions</a>
+        <a href="/transactions/<%=transaction._id %>/edit">Edit</a>
+        <form action="/transactions/<%=transaction._id %>?_method=DELETE" method="POST">
+        <button>Delete</button>
+        </form>
+
     </footer>
 </body>
 </html>

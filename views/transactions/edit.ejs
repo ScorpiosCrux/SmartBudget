@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Transaction</title>
+</head>
+<body>
+    <!-- Going to /transactions/:id but with a put request after we are done editing-->
+    <form action="/transactions/<%= transaction._id %>?_method=PUT " method="POST">
+        <div>
+            <label for="description">Description:</label>
+            <!-- This input with this name allows us to group variables under "transaction" -->
+            <input type="text" id="description" name="transaction[description]" value="<%= transaction.description %> ">
+        </div>
+        <div>
+            <label for="cost">Cost:</label>
+            <input type="text" id="cost" name="transaction[cost]" value="<%= transaction.cost %>">
+        </div>
+        <button>Finish Editing</button>
+    </form> 
+    <a href="/transactions/<% transaction._id %> ">Back To Transaction</a>
+</body>
+</html>

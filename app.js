@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const Transaction = require('./models/transaction')
+const methodOverride = require('method-override');
+const Transaction = require('./models/transaction');
 
 mongoose.connect('mongodb://localhost:27017/smart-budget');
 
@@ -19,6 +20,15 @@ app.set('views', path.join(__dirname, 'views'))
 /* This parses the request body so that we can use the variables
 This is used in app.post('transactions'... */
 app.use(express.urlencoded({extended: true}));
+
+//Since HTML only has get and post, we can still use "put" etc with this
+// '_method' will be the query string that is encoded in the URL
+app.use(methodOverride('_method'))          
+
+/* NOTE:
+    When adding a route, order matters a lot here. Each request will take
+    the first route possible!
+*/
 
 app.get('/', (req, res) => {
     res.render('home')
@@ -44,6 +54,22 @@ app.get('/transactions/:id', async (req, res) => {                  // :id is th
     res.render('transactions/show', {transaction})
 });
 
+app.get('/transactions/:id/edit', async (req, res) => {                  // :id is the id of the transaction
+    const transaction = await Transaction.findById(req.params.id)   // Using the id, we find the transaction in the db
+    res.render('transactions/edit', {transaction})
+});
+
+app.put('/transactions/:id', async (req, res) => {
+    const { id } = req.params;
+    const transaction = await Transaction.findByIdAndUpdate(id, {...req.body.transaction})    // We spread the array. Basically making the array/dict args
+    res.redirect(`/transactions/${transaction._id}`);
+})
+
+app.delete('/transactions/:id', async (req, res) => {
+    const { id } = req.params;
+    await Transaction.findByIdAndDelete(id);
+    res.redirect('/transactions');
+});
 
 app.listen(3000, () => {
     console.log('Serving on port 3000');
