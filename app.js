@@ -1,8 +1,9 @@
-const express = require('express');
-const path = require('path');
-const mongoose = require('mongoose');
-const methodOverride = require('method-override');
-const Transaction = require('./models/transaction');
+const express = require('express');     //express allows us to start up a server and define routes
+const path = require('path');           //allows us to run code from any path
+const mongoose = require('mongoose');   //the interface for interacting with mongoDB
+const ejsMate = require('ejs-mate')      //allows us to further extend templating
+const methodOverride = require('method-override');  //allows other requests other than GET and POST
+const Transaction = require('./models/transaction');//I believe this allows us to use the schema and connect to the db? 
 
 mongoose.connect('mongodb://localhost:27017/smart-budget');
 
@@ -14,6 +15,7 @@ db.once("open", () => {
 
 const app = express();
 
+app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
