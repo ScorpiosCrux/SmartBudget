@@ -1,4 +1,4 @@
-<% layout('../layouts/boilerplate') %> 
+<% layout('./layouts/boilerplate') %> 
 <!-- Going to /transactions/:id but with a put request after we are done editing-->
 <form action="/transactions/<%= transaction._id %>?_method=PUT " method="POST">
     <div>
