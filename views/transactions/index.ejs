@@ -1,4 +1,4 @@
-<% layout('../layouts/boilerplate') %> 
+<% layout('../layouts/boilerplate') %>
 <h1>All Transactions with boilerplate</h1>
 
 <div>
@@ -7,8 +7,7 @@
 
 <ul>
     <% for (let transaction of transactions) {%>
-        <li><a href="/transactions/<%= transaction._id %>"><%= transaction.description %></a> </li>
-    <% } %> 
+    <li><a href="/transactions/<%= transaction._id %>"><%= transaction.description %></a> </li>
+    <% } %>
 
 </ul>
-    
