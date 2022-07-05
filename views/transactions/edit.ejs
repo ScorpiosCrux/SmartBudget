@@ -1,15 +1,28 @@
 <% layout('./layouts/boilerplate') %> 
 <!-- Going to /transactions/:id but with a put request after we are done editing-->
-<form action="/transactions/<%= transaction._id %>?_method=PUT " method="POST">
-    <div>
-        <label for="description">Description:</label>
-        <!-- This input with this name allows us to group variables under "transaction" -->
-        <input type="text" id="description" name="transaction[description]" value="<%= transaction.description %> ">
+<div class="row">
+    <h1 class="text-center"> Edit Transaction</h1>
+    <div class="col-6 offset-3">
+        <!-- Going to /transactions after it posts -->
+        <form action="/transactions/<%= transaction._id %>?_method=PUT " method="POST">
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <!-- This input with this name allows us to group variables under "transaction" -->
+                <input class="form-control" type="text" id="description" name="transaction[description]" value="<%= transaction.description %> ">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="cost">Cost</label>
+                <input class="form-control" type="text" id="cost" name="transaction[cost]" value="<%= transaction.cost %>" >
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="date">Date</label>
+                <input class="form-control" type="text" id="date" name="transaction[date]" value="<%= transaction.date %>" >
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success">Update Transaction</button>
+            </div>
+        </form>
+        <a href="/transactions/<% transaction._id %> ">Back To Transaction</a>
     </div>
-    <div>
-        <label for="cost">Cost:</label>
-        <input type="text" id="cost" name="transaction[cost]" value="<%= transaction.cost %>">
-    </div>
-    <button>Finish Editing</button>
-</form> 
-<a href="/transactions/<% transaction._id %> ">Back To Transaction</a>
+</div>
+
