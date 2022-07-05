@@ -1,5 +1,8 @@
 # Smart Budget
 
+## Seeding the DB
+- Run `node seeds/index.js`
+
 ## How to view the fake data in the database
 `mongo` \
 `use smart-budget`\
@@ -30,3 +33,4 @@
     ]
 }
 ```
+
