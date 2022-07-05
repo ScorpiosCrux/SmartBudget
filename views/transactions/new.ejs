@@ -1,15 +1,28 @@
 <% layout('./layouts/boilerplate') %>
-<!-- Going to /transactions after it posts -->
-<form action="/transactions" method="POST">
-    <div>
-        <label for="description">Description:</label>
-        <!-- This input with this name allows us to group variables under "transaction" -->
-        <input type="text" id="description" name="transaction[description]">
+
+<div class="row">
+    <h1 class="text-center"> Add Transaction</h1>
+    <div class="col-6 offset-3">
+        <!-- Going to /transactions after it posts -->
+        <form action="/transactions" method="POST">
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <!-- This input with this name allows us to group variables under "transaction" -->
+                <input class="form-control" type="text" id="description" name="transaction[description]">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="cost">Cost</label>
+                <input class="form-control" type="text" id="cost" name="transaction[cost]">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="date">Date</label>
+                <input class="form-control" type="text" id="date" name="transaction[date]">
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success">Add Transaction</button>
+            </div>
+        </form>
+        <a href="/transactions">Back</a>
+
     </div>
-    <div>
-        <label for="cost">Cost:</label>
-        <input type="text" id="cost" name="transaction[cost]">
-    </div>
-    <button>Add Transaction</button>
-</form>
-<a href="/transactions">Back</a>
+</div>
