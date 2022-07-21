@@ -1,5 +1,8 @@
 # Smart Budget
 
+## Dependencies
+- Bootstrap v.5.0.2
+
 ## Seeding the DB
 - Run `node seeds/index.js`
 
