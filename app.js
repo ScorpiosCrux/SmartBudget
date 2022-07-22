@@ -4,6 +4,7 @@ const mongoose = require('mongoose');   //the interface for interacting with mon
 const ejsMate = require('ejs-mate')      //allows us to further extend templating
 const methodOverride = require('method-override');  //allows other requests other than GET and POST
 const Transaction = require('./models/transaction');//I believe this allows us to use the schema and connect to the db? 
+const CatchAsync = require("./utils/CatchAsync")
 
 mongoose.connect('mongodb://localhost:27017/smart-budget');
 
@@ -51,14 +52,10 @@ app.post('/transactions', async(req, res) => {
     res.redirect(`/transactions/${transaction._id}`);               // redirect to the transaction we just created
 })
 
-app.get('/transactions/:id', async (req, res, next) => {                  // :id is the id of the transaction
-    try {
+app.get('/transactions/:id', CatchAsync(async (req, res, next) => {                  // :id is the id of the transaction
         const transaction = await Transaction.findById(req.params.id)   // Using the id, we find the transaction in the db
         res.render('transactions/show', {transaction})    
-    } catch (error) {
-        next(error);
-    }
-});
+}));
 
 app.get('/transactions/:id/edit', async (req, res) => {                  // :id is the id of the transaction
     const transaction = await Transaction.findById(req.params.id)   // Using the id, we find the transaction in the db
