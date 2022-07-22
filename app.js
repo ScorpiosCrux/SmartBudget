@@ -51,9 +51,13 @@ app.post('/transactions', async(req, res) => {
     res.redirect(`/transactions/${transaction._id}`);               // redirect to the transaction we just created
 })
 
-app.get('/transactions/:id', async (req, res) => {                  // :id is the id of the transaction
-    const transaction = await Transaction.findById(req.params.id)   // Using the id, we find the transaction in the db
-    res.render('transactions/show', {transaction})
+app.get('/transactions/:id', async (req, res, next) => {                  // :id is the id of the transaction
+    try {
+        const transaction = await Transaction.findById(req.params.id)   // Using the id, we find the transaction in the db
+        res.render('transactions/show', {transaction})    
+    } catch (error) {
+        next(error);
+    }
 });
 
 app.get('/transactions/:id/edit', async (req, res) => {                  // :id is the id of the transaction
@@ -71,6 +75,11 @@ app.delete('/transactions/:id', async (req, res) => {
     const { id } = req.params;
     await Transaction.findByIdAndDelete(id);
     res.redirect('/transactions');
+});
+
+// This could include a bunch of error handling as this is the general route for all errors
+app.use((err, req, res, next) => {
+    res.send("Uh ohhh, well that's embarassing! Something went terribly wrong :( Please return to the home page!");
 });
 
 app.listen(3000, () => {
