@@ -2,11 +2,13 @@ const express = require('express'); //express allows us to start up a server and
 const path = require('path'); //allows us to run code from any path
 const mongoose = require('mongoose'); //the interface for interacting with mongoDB
 const ejsMate = require('ejs-mate') //allows us to further extend templating
+const Joi = require('joi');
+
+const { transactionSchema } = require('./schemas.js');
 const methodOverride = require('method-override'); //allows other requests other than GET and POST
 const Transaction = require('./models/transaction'); //I believe this allows us to use the schema and connect to the db? 
 const CatchAsync = require("./utils/CatchAsync")
 const ExpressError = require("./utils/ExpressError")
-const Joi = require('joi');
 const {
     join
 } = require('path');
@@ -42,14 +44,7 @@ app.use(methodOverride('_method'))
 
 
 const validateCampground = (req, res, next) => {
-    const transactionSchema = Joi.object({
-        //Checks if it's an object and required
-        transaction: Joi.object({
-            description: Joi.string().required(),
-            cost: Joi.number().required().min(0),
-            date: Joi.string().required(),
-        }).required()
-    });
+    
 
     const {
         error
@@ -102,7 +97,7 @@ app.get('/transactions/:id/edit', async (req, res) => { // :id is the id of the 
     })
 });
 
-app.put('/transactions/:id', async (req, res) => {
+app.put('/transactions/:id', validateCampground, CatchAsync(async (req, res) => {
     const {
         id
     } = req.params;
@@ -110,7 +105,7 @@ app.put('/transactions/:id', async (req, res) => {
         ...req.body.transaction
     }) // We spread the array. Basically making the array/dict args
     res.redirect(`/transactions/${transaction._id}`);
-})
+}));
 
 app.delete('/transactions/:id', async (req, res) => {
     const {
