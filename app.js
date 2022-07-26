@@ -6,6 +6,8 @@ const methodOverride = require('method-override'); //allows other requests other
 const Transaction = require('./models/transaction'); //I believe this allows us to use the schema and connect to the db? 
 const CatchAsync = require("./utils/CatchAsync")
 const ExpressError = require("./utils/ExpressError")
+const Joi = require('joi');
+const { join } = require('path');
 
 mongoose.connect('mongodb://localhost:27017/smart-budget');
 
@@ -52,7 +54,25 @@ app.get('/transactions/new', async (req, res) => {
 })
 
 app.post('/transactions', CatchAsync(async (req, res) => {
-    if (!req.body.transaction) throw new ExpressError('Invalid Transaction Data', 400); // If req.body.transaction is undefined it will be false
+    // if (!req.body.transaction) throw new ExpressError('Invalid Transaction Data', 400); // If req.body.transaction is undefined it will be false
+
+    const transactionSchema = Joi.object({
+        //Checks if it's an object and required
+        transaction: Joi.object({
+            description: Joi.string().required(),
+            cost: Joi.number().required().min(0),
+            date: Joi.string().required(),
+        }).required()                
+    });
+
+    const { error } = transactionSchema.validate(req.body);
+
+    // If there is an error and it's not empty:
+    if(error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    }
+
     const transaction = new Transaction(req.body.transaction);
     await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
     res.redirect(`/transactions/${transaction._id}`); // redirect to the transaction we just created
