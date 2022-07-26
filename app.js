@@ -7,7 +7,9 @@ const Transaction = require('./models/transaction'); //I believe this allows us 
 const CatchAsync = require("./utils/CatchAsync")
 const ExpressError = require("./utils/ExpressError")
 const Joi = require('joi');
-const { join } = require('path');
+const {
+    join
+} = require('path');
 
 mongoose.connect('mongodb://localhost:27017/smart-budget');
 
@@ -38,6 +40,31 @@ app.use(methodOverride('_method'))
     the first route possible!
 */
 
+
+const validateCampground = (req, res, next) => {
+    const transactionSchema = Joi.object({
+        //Checks if it's an object and required
+        transaction: Joi.object({
+            description: Joi.string().required(),
+            cost: Joi.number().required().min(0),
+            date: Joi.string().required(),
+        }).required()
+    });
+
+    const {
+        error
+    } = transactionSchema.validate(req.body);
+
+    // If there is an error and it's not empty:
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+}
+
+
 app.get('/', (req, res) => {
     res.render('home')
 });
@@ -53,25 +80,8 @@ app.get('/transactions/new', async (req, res) => {
     res.render('transactions/new');
 })
 
-app.post('/transactions', CatchAsync(async (req, res) => {
-    // if (!req.body.transaction) throw new ExpressError('Invalid Transaction Data', 400); // If req.body.transaction is undefined it will be false
-
-    const transactionSchema = Joi.object({
-        //Checks if it's an object and required
-        transaction: Joi.object({
-            description: Joi.string().required(),
-            cost: Joi.number().required().min(0),
-            date: Joi.string().required(),
-        }).required()                
-    });
-
-    const { error } = transactionSchema.validate(req.body);
-
-    // If there is an error and it's not empty:
-    if(error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    }
+// validateCampground is added as an argument so that data is passed there before continuing to run here.
+app.post('/transactions', validateCampground, CatchAsync(async (req, res) => {
 
     const transaction = new Transaction(req.body.transaction);
     await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
