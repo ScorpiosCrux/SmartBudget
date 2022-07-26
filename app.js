@@ -52,7 +52,7 @@ app.get('/transactions/new', async (req, res) => {
 })
 
 app.post('/transactions', CatchAsync(async (req, res) => {
-    if (!req.body.transaction) throw new ExpressError('Invalid Transaction Data', 400);     // If req.body.transaction is undefined it will be false
+    if (!req.body.transaction) throw new ExpressError('Invalid Transaction Data', 400); // If req.body.transaction is undefined it will be false
     const transaction = new Transaction(req.body.transaction);
     await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
     res.redirect(`/transactions/${transaction._id}`); // redirect to the transaction we just created
@@ -103,9 +103,12 @@ app.all('*', (req, res, next) => {
 // This could include a bunch of error handling as this is the general route for all errors
 app.use((err, req, res, next) => {
     const {
-        statusCode = 500, msg = 'Something went wrong!'
+        statusCode = 500
     } = err;
-    res.status(statusCode).send(msg);
+    if (!err.msg) err.msg = 'Something went wrong!';
+    res.status(statusCode).render('errors', {
+        err
+    });
 });
 
 app.listen(3000, () => {
