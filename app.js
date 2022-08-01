@@ -1,141 +1,136 @@
-const express = require('express'); //express allows us to start up a server and define routes
-const path = require('path'); //allows us to run code from any path
-const mongoose = require('mongoose'); //the interface for interacting with mongoDB
-const ejsMate = require('ejs-mate') //allows us to further extend templating
-const Joi = require('joi');
+const express = require("express"); //express allows us to start up a server and define routes
+const path = require("path"); //allows us to run code from any path
+const mongoose = require("mongoose"); //the interface for interacting with mongoDB
+const ejsMate = require("ejs-mate"); //allows us to further extend templating
+const Joi = require("joi");
 
-const { transactionSchema } = require('./schemas.js');
-const methodOverride = require('method-override'); //allows other requests other than GET and POST
-const Transaction = require('./models/transaction'); //I believe this allows us to use the schema and connect to the db? 
-const CatchAsync = require("./utils/CatchAsync")
-const ExpressError = require("./utils/ExpressError")
-const {
-    join
-} = require('path');
+const { transactionSchema } = require("./schemas.js");
+const methodOverride = require("method-override"); //allows other requests other than GET and POST
+const Transaction = require("./models/transaction"); //I believe this allows us to use the schema and connect to the db?
+const catchAsync = require("./utils/CatchAsync");
+const ExpressError = require("./utils/ExpressError");
+const { join } = require("path");
 
-mongoose.connect('mongodb://localhost:27017/smart-budget');
+mongoose.connect("mongodb://localhost:27017/smart-budget");
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
-    console.log("Database connected");
-})
+  console.log("Database connected");
+});
 
 const app = express();
 
-app.engine('ejs', ejsMate)
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'))
+app.engine("ejs", ejsMate);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 /* This parses the request body so that we can use the variables
 This is used in app.post('transactions'... */
-app.use(express.urlencoded({
-    extended: true
-}));
+app.use(express.urlencoded({ extended: true }));
 
 //Since HTML only has get and post, we can still use "put" etc with this
 // '_method' will be the query string that is encoded in the URL
-app.use(methodOverride('_method'))
+app.use(methodOverride("_method"));
 
 /* NOTE:
     When adding a route, order matters a lot here. Each request will take
     the first route possible!
 */
 
-
 const validateCampground = (req, res, next) => {
-    
+  const { error } = transactionSchema.validate(req.body);
 
-    const {
-        error
-    } = transactionSchema.validate(req.body);
+  // If there is an error and it's not empty:
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
 
-    // If there is an error and it's not empty:
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-}
-
-
-app.get('/', (req, res) => {
-    res.render('home')
+app.get("/", (req, res) => {
+  res.render("home");
 });
 
-app.get('/transactions', async (req, res) => {
-    const transactions = await Transaction.find({}); // Using Transactions we look for everything
-    res.render('transactions/index', {
-        transactions
-    }) // We pass transactions to the EJS template
+app.get("/transactions", async (req, res) => {
+  const transactions = await Transaction.find({}); // Using Transactions we look for everything
+  res.render("transactions/index", {
+    transactions,
+  }); // We pass transactions to the EJS template
 });
 
-app.get('/transactions/new', async (req, res) => {
-    res.render('transactions/new');
-})
+app.get("/transactions/new", async (req, res) => {
+  res.render("transactions/new");
+});
 
 // validateCampground is added as an argument so that data is passed there before continuing to run here.
-app.post('/transactions', validateCampground, CatchAsync(async (req, res) => {
-
+app.post(
+  "/transactions",
+  validateCampground,
+  catchAsync(async (req, res) => {
     const transaction = new Transaction(req.body.transaction);
     await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
     res.redirect(`/transactions/${transaction._id}`); // redirect to the transaction we just created
-}));
+  })
+);
 
-app.get('/transactions/:id', CatchAsync(async (req, res, next) => { // :id is the id of the transaction
-    const transaction = await Transaction.findById(req.params.id) // Using the id, we find the transaction in the db
-    res.render('transactions/show', {
-        transaction
-    })
-}));
+app.get(
+  "/transactions/:id",
+  catchAsync(async (req, res, next) => {
+    // :id is the id of the transaction
+    const transaction = await Transaction.findById(req.params.id); // Using the id, we find the transaction in the db
+    res.render("transactions/show", {
+      transaction,
+    });
+  })
+);
 
-app.get('/transactions/:id/edit', async (req, res) => { // :id is the id of the transaction
-    const transaction = await Transaction.findById(req.params.id) // Using the id, we find the transaction in the db
-    res.render('transactions/edit', {
-        transaction
-    })
+app.get("/transactions/:id/edit", async (req, res) => {
+  // :id is the id of the transaction
+  const transaction = await Transaction.findById(req.params.id); // Using the id, we find the transaction in the db
+  res.render("transactions/edit", {
+    transaction,
+  });
 });
 
-app.put('/transactions/:id', validateCampground, CatchAsync(async (req, res) => {
-    const {
-        id
-    } = req.params;
+app.put(
+  "/transactions/:id",
+  validateCampground,
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
     const transaction = await Transaction.findByIdAndUpdate(id, {
-        ...req.body.transaction
-    }) // We spread the array. Basically making the array/dict args
+      ...req.body.transaction,
+    }); // We spread the array. Basically making the array/dict args
     res.redirect(`/transactions/${transaction._id}`);
-}));
+  })
+);
 
-app.delete('/transactions/:id', async (req, res) => {
-    const {
-        id
-    } = req.params;
-    await Transaction.findByIdAndDelete(id);
-    res.redirect('/transactions');
+app.delete("/transactions/:id", async (req, res) => {
+  const { id } = req.params;
+  await Transaction.findByIdAndDelete(id);
+  res.redirect("/transactions");
 });
 
 // The app.all method is like global logic
-// https://expressjs.com/en/4x/api.html#app.all 
+// https://expressjs.com/en/4x/api.html#app.all
 // The location of the function is very important as if the routes above don't match
 // then it will be caught here
-app.all('*', (req, res, next) => {
-    next(new ExpressError("Page Not Found", 404))
-    res.send("404!!!");
-
-})
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page Not Found", 404));
+  res.send("404!!!");
+});
 
 // This could include a bunch of error handling as this is the general route for all errors
 app.use((err, req, res, next) => {
-    const {
-        statusCode = 500
-    } = err;
-    if (!err.msg) err.msg = 'Something went wrong!';
-    res.status(statusCode).render('errors', {
-        err
-    });
+  const { statusCode = 500 } = err;
+  if (!err.msg) err.msg = "Something went wrong!";
+  res.status(statusCode).render("errors", {
+    err,
+  });
 });
 
 app.listen(3000, () => {
-    console.log('Serving on port 3000');
+  console.log("Serving on port 3000");
 });
