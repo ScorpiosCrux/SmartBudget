@@ -93,7 +93,8 @@ app.get(
   "/transactions/:id",
   catchAsync(async (req, res, next) => {
     // :id is the id of the transaction
-    const transaction = await Transaction.findById(req.params.id); // Using the id, we find the transaction in the db
+    const transaction = await Transaction.findById(req.params.id).populate('notes'); // Using the id, we find the transaction in the db
+    console.log(transaction);
     res.render("transactions/show", {
       transaction,
     });
