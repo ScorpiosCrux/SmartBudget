@@ -10,10 +10,10 @@ const TransactionSchema = new Schema({
     category: String,
     image: String,
     // we're putting this into here because there's usually not many reviews for a Transaction
-    reviews: [
+    notes: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Review',      // From our exports in review.js 
+            ref: 'Note',      // From our exports in review.js 
         }
     ]
 });
