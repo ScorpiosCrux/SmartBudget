@@ -11,6 +11,6 @@ module.exports.transactionSchema = Joi.object({
 
 module.exports.noteSchema = Joi.object({
     note: Joi.object({
-        body: Joi.string().required(),
-    })
-})
+        body: Joi.string().required(),      // this is when body is empty
+    }).required()                           // this required is if everything is empty
+});
