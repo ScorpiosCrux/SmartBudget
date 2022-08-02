@@ -8,3 +8,9 @@ module.exports.transactionSchema = Joi.object({
         date: Joi.string().required(),
     }).required()
 });
+
+module.exports.noteSchema = Joi.object({
+    note: Joi.object({
+        body: Joi.string().required(),
+    })
+})

@@ -3,7 +3,7 @@
 
 <div class="row mb-3">
   <div class="col-6 offset-3">
-    <div class="card">
+    <div class="card mb-3">
       <img src="<%= transaction.image %>" class="card-img-top" alt="">
       <div class="card-body">
         <h5 class="card-title"><%= transaction.description %> </h5>
@@ -22,6 +22,18 @@
         2 days ago
       </div>
     </div>
+    <h2>Leave Some Notes</h2>
+    <form action="/transactions/<%= transaction._id %>/notes" method="POST" class="mb-3 validated-form" novalidate>
+      <div class="div">
+        <label class="form-label" for="rating">Rating</label>
+        <input class="form-range" type="range" min="1" max="5" name="note[rating]" id="rating">
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="body">Notes</label>
+        <textarea class="form-control" name="note[body]" id="body" cols="30" rows="10" required></textarea>
+      </div>
+      <button class="btn btn-success">Submit</button>
+    </form>
     <footer>
       <a href="/transactions">All Transactions</a>
     </footer>

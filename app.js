@@ -4,9 +4,10 @@ const mongoose = require("mongoose"); //the interface for interacting with mongo
 const ejsMate = require("ejs-mate"); //allows us to further extend templating
 const Joi = require("joi");
 
-const { transactionSchema } = require("./schemas.js");
+const { transactionSchema, noteSchema } = require("./schemas.js");
 const methodOverride = require("method-override"); //allows other requests other than GET and POST
 const Transaction = require("./models/transaction"); //I believe this allows us to use the schema and connect to the db?
+const Note = require("./models/note");
 const catchAsync = require("./utils/CatchAsync");
 const ExpressError = require("./utils/ExpressError");
 const { join } = require("path");
@@ -49,6 +50,18 @@ const validateCampground = (req, res, next) => {
     next();
   }
 };
+
+const validateNote = (req, res, next) => {
+  const {error} = noteSchema.validate(req.body);
+
+  // If there is an error and it's not empty:
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+}
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -112,6 +125,19 @@ app.delete("/transactions/:id", async (req, res) => {
   await Transaction.findByIdAndDelete(id);
   res.redirect("/transactions");
 });
+
+app.post(
+  "/transactions/:id/notes",
+  validateNote,
+  catchAsync(async (req, res) => {
+    const transaction = await Transaction.findById(req.params.id);   // Find the transaction
+    const note = new Note(req.body.note);                           // Create note
+    transaction.notes.push(note);
+    await note.save();
+    await transaction.save();
+    res.redirect(`/transactions/${transaction._id}`);
+  })
+);
 
 // The app.all method is like global logic
 // https://expressjs.com/en/4x/api.html#app.all
