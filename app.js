@@ -96,7 +96,6 @@ app.get(
     const transaction = await Transaction.findById(req.params.id).populate(
       "notes"
     ); // Using the id, we find the transaction in the db
-    console.log(transaction);
     res.render("transactions/show", {
       transaction,
     });
