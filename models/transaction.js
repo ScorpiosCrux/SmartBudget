@@ -19,6 +19,8 @@ const TransactionSchema = new Schema({
   ],
 });
 
+
+
 // .post will have already deleted the transaction but we want to get rid
 // of the extra notes that were associated.
 TransactionSchema.post("findOneAndDelete", async function (doc) {
