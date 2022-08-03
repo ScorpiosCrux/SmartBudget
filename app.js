@@ -52,7 +52,7 @@ const validateCampground = (req, res, next) => {
 };
 
 const validateNote = (req, res, next) => {
-  const {error} = noteSchema.validate(req.body);
+  const { error } = noteSchema.validate(req.body);
 
   // If there is an error and it's not empty:
   if (error) {
@@ -61,7 +61,7 @@ const validateNote = (req, res, next) => {
   } else {
     next();
   }
-}
+};
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -93,7 +93,9 @@ app.get(
   "/transactions/:id",
   catchAsync(async (req, res, next) => {
     // :id is the id of the transaction
-    const transaction = await Transaction.findById(req.params.id).populate('notes'); // Using the id, we find the transaction in the db
+    const transaction = await Transaction.findById(req.params.id).populate(
+      "notes"
+    ); // Using the id, we find the transaction in the db
     console.log(transaction);
     res.render("transactions/show", {
       transaction,
@@ -131,12 +133,23 @@ app.post(
   "/transactions/:id/notes",
   validateNote,
   catchAsync(async (req, res) => {
-    const transaction = await Transaction.findById(req.params.id);   // Find the transaction
-    const note = new Note(req.body.note);                           // Create note
+    const transaction = await Transaction.findById(req.params.id); // Find the transaction
+    const note = new Note(req.body.note); // Create note
     transaction.notes.push(note);
     await note.save();
     await transaction.save();
     res.redirect(`/transactions/${transaction._id}`);
+  })
+);
+
+app.delete(
+  "/transactions/:id/notes/:noteId",
+  catchAsync(async (req, res) => {
+    const {id, noteId} = req.params;
+    // In the Transaction DB find by ID, pull where notes is equal to noteId
+    await Transaction.findByIdAndUpdate(id, {$pull : {notes: noteId}})
+    await Note.findByIdAndDelete(noteId);
+    res.redirect(`/transactions/${id}`);
   })
 );
 

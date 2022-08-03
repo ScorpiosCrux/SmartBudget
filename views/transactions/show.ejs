@@ -68,6 +68,9 @@
       <div class="card-body">
         <h5 class="card-title">Rating: <%= note.rating %></h5>
         <p class="card-text">Note: <%= note.body %></p>
+        <form action="/transactions/<%= transaction._id %>/notes/<%= note._id %>?_method=DELETE" method="POST">
+        <button class="btn btn-sm btn-danger"> Delete </button>
+      </form>
       </div>
     </div>
     <% } %>
