@@ -19,8 +19,8 @@ const Transaction = require("./models/transaction"); //I believe this allows us 
 const Note = require("./models/note");
 
 //Route Requirements
-const transactions = require(('./routes/transactions'))
-
+const transactions = require("./routes/transactions");
+const notes = require("./routes/notes");
 
 mongoose.connect("mongodb://localhost:27017/smart-budget");
 
@@ -49,15 +49,12 @@ app.use(methodOverride("_method"));
     the first route possible!
 */
 
-
-
-app.use('/transactions', transactions)
+app.use("/transactions", transactions);
+app.use("/transactions/:id/notes", notes);
 
 app.get("/", (req, res) => {
   res.render("home");
 });
-
-
 
 // The app.all method is like global logic
 // https://expressjs.com/en/4x/api.html#app.all
