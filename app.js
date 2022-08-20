@@ -3,6 +3,8 @@ const express = require("express"); //express allows us to start up a server and
 const path = require("path"); //allows us to run code from any path
 const mongoose = require("mongoose"); //the interface for interacting with mongoDB
 const ejsMate = require("ejs-mate"); //allows us to further extend templating
+const session = require("express-session"); // allows sessions, check notes for why we use sessions instead of cookies
+const flash = require("connect-flash");
 const { join } = require("path");
 const Joi = require("joi");
 const methodOverride = require("method-override"); //allows other requests other than GET and POST
@@ -40,14 +42,37 @@ app.set("views", path.join(__dirname, "views"));
 This is used in app.post('transactions'... */
 app.use(express.urlencoded({ extended: true }));
 
-//Since HTML only has get and post, we can still use "put" etc with this
+// Since HTML only has get and post, we can still use "put" etc with this
 // '_method' will be the query string that is encoded in the URL
 app.use(methodOverride("_method"));
+
+// Set it so that the public directory can be seen
+app.use(express.static(path.join(__dirname, "public")));
 
 /* NOTE:
     When adding a route, order matters a lot here. Each request will take
     the first route possible!
 */
+
+const sessionConfig = {
+  secret: "thisIsMyGreatSecretOnGitHub",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true, // Should be set to true to prevent XSS. This is the default for express
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // Add a week to Date.now(). Date.now is in milliseconds
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
+app.use(session(sessionConfig));
+app.use(flash());
+
+// Middleware that stores the messaged under res.locals. Make sure this is before routes
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 app.use("/transactions", transactions);
 app.use("/transactions/:id/notes", notes);

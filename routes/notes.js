@@ -38,6 +38,7 @@ router.post(
     transaction.notes.push(note);
     await note.save();
     await transaction.save();
+    req.flash('success', 'Created a new note!')
     res.redirect(`/transactions/${transaction._id}`);
   })
 );
@@ -49,6 +50,7 @@ router.delete(
     // In the Transaction DB find by ID, pull where notes is equal to noteId
     await Transaction.findByIdAndUpdate(id, { $pull: { notes: noteId } });
     await Note.findByIdAndDelete(noteId);
+    req.flash('success', 'Successfully deleted the a note!')
     res.redirect(`/transactions/${id}`);
   })
 );
