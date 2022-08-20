@@ -2,12 +2,15 @@
 
 ## Dependencies
 - Bootstrap v.5.0.2
+- NodeJS
+- MongoDB
+    - https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/ 
 
 ## Seeding the DB
 - Run `node seeds/index.js`
 
 ## How to view the fake data in the database
-`mongo` \
+`mongo` It is `mongoSH` on newer versions\
 `use smart-budget`\
 `db.transactions.find()`
 
