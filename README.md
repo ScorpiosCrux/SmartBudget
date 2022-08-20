@@ -5,6 +5,7 @@
 - NodeJS
 - MongoDB
     - https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/ 
+- Nodemon installed Globally
 
 ## Seeding the DB
 - Run `node seeds/index.js`
