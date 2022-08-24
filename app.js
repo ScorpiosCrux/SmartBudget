@@ -24,8 +24,9 @@ const Transaction = require("./models/transaction"); //I believe this allows us 
 const Note = require("./models/note");
 
 //Route Requirements
-const transactions = require("./routes/transactions");
-const notes = require("./routes/notes");
+const transactionRoutes = require("./routes/transactions");
+const noteRoutes = require("./routes/notes");
+const userRoutes = require('./routes/users')
 
 mongoose.connect("mongodb://localhost:27017/smart-budget");
 
@@ -92,8 +93,9 @@ app.get("/fakeUser", async (req, res) => {
     res.send(newUser);
 });
 
-app.use("/transactions", transactions);
-app.use("/transactions/:id/notes", notes);
+app.use("/transactions", transactionRoutes);
+app.use("/transactions/:id/notes", noteRoutes);
+app.use("/", userRoutes);
 
 app.get("/", (req, res) => {
     res.render("home");
