@@ -8,6 +8,9 @@ const flash = require("connect-flash");
 const { join } = require("path");
 const Joi = require("joi");
 const methodOverride = require("method-override"); //allows other requests other than GET and POST
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
 //Schemas
 const { transactionSchema, noteSchema } = require("./schemas.js");
@@ -29,7 +32,7 @@ mongoose.connect("mongodb://localhost:27017/smart-budget");
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
-  console.log("Database connected");
+    console.log("Database connected");
 });
 
 const app = express();
@@ -55,30 +58,45 @@ app.use(express.static(path.join(__dirname, "public")));
 */
 
 const sessionConfig = {
-  secret: "thisIsMyGreatSecretOnGitHub",
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: true, // Should be set to true to prevent XSS. This is the default for express
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // Add a week to Date.now(). Date.now is in milliseconds
-    maxAge: 1000 * 60 * 60 * 24 * 7,
-  },
+    secret: "thisIsMyGreatSecretOnGitHub",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true, // Should be set to true to prevent XSS. This is the default for express
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // Add a week to Date.now(). Date.now is in milliseconds
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
 };
 app.use(session(sessionConfig));
 app.use(flash());
 
+// https://www.passportjs.org/concepts/authentication/
+// TODO: You may no longer need to initialize anymore in the new documentation
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser);
+passport.deserializeUser(User.deserializeUser);
+
 // Middleware that stores the messaged under res.locals. Make sure this is before routes
 app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
-  next();
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+});
+
+app.get("/fakeUser", async (req, res) => {
+    const user = new User({ email: "thisIsATestEmail@gmail.com", username: "test" });
+    const newUser = await User.register(user, "notsecure");         // "Registers" a user, hashes, salts, etc
+    res.send(newUser);
 });
 
 app.use("/transactions", transactions);
 app.use("/transactions/:id/notes", notes);
 
 app.get("/", (req, res) => {
-  res.render("home");
+    res.render("home");
 });
 
 // The app.all method is like global logic
@@ -86,19 +104,19 @@ app.get("/", (req, res) => {
 // The location of the function is very important as if the routes above don't match
 // then it will be caught here
 app.all("*", (req, res, next) => {
-  next(new ExpressError("Page Not Found", 404));
-  res.send("404!!!");
+    next(new ExpressError("Page Not Found", 404));
+    res.send("404!!!");
 });
 
 // This could include a bunch of error handling as this is the general route for all errors
 app.use((err, req, res, next) => {
-  const { statusCode = 500 } = err;
-  if (!err.msg) err.msg = "Something went wrong!";
-  res.status(statusCode).render("errors", {
-    err,
-  });
+    const { statusCode = 500 } = err;
+    if (!err.msg) err.msg = "Something went wrong!";
+    res.status(statusCode).render("errors", {
+        err,
+    });
 });
 
 app.listen(3000, () => {
-  console.log("Serving on port 3000");
+    console.log("Serving on port 3000");
 });
