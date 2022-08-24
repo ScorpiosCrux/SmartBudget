@@ -3,6 +3,7 @@ const express = require("express");
 // NOTE: Without this, we will not be able to get the ID from /:id/ because
 // Router likes to keeps params separate
 const router = express.Router({ mergeParams: true });
+const passport = require("passport");
 
 // Schemas
 // ...
@@ -40,6 +41,15 @@ router.post(
         }
     })
 );
+
+router.get("/login", (req, res) => {
+    res.render("users/login");
+});
+
+router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), (req, res) => {
+    req.flash("success", "Welcome Back!");
+    res.redirect("/transactions");
+});
 
 // Export
 module.exports = router;
