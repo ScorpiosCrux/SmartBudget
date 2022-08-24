@@ -8,10 +8,12 @@ const router = express.Router({ mergeParams: true });
 // ...
 
 // Functions and Classes
-// ...
+const catchAsync = require("../utils/CatchAsync");
+const ExpressError = require("../utils/ExpressError");
 
 // Models
 const User = require("../models/user");
+const _ = require("passport-local-mongoose");
 
 // Helper Middleware
 // ...
@@ -21,9 +23,23 @@ router.get("/register", (req, res) => {
     res.render("users/register");
 });
 
-router.post("/register", async (req, res) => {
-    res.send(req.body);
-});
+// We don't want the user to be displayed a new page with the error, the error should be flashed
+// TODO: Don't delete the registered data
+router.post(
+    "/register",
+    catchAsync(async (req, res) => {
+        try {
+            const { email, username, password } = req.body;
+            const user = new User({ email, username, password });
+            const registeredUser = await User.register(user, password);
+            req.flash("success", "Welcome to BudgetSmart!");
+            res.redirect("/transactions");
+        } catch (e) {
+            req.flash("error", e.message);
+            res.redirect("register");
+        }
+    })
+);
 
 // Export
 module.exports = router;
