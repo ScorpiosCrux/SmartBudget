@@ -33,8 +33,11 @@ router.post(
             const { email, username, password } = req.body;
             const user = new User({ email, username, password });
             const registeredUser = await User.register(user, password);
-            req.flash("success", "Welcome to BudgetSmart!");
-            res.redirect("/transactions");
+            req.login(registeredUser, err => {
+                if (err) return next(err);
+                req.flash("success", "Welcome to BudgetSmart!");
+                res.redirect("/transactions");
+            })
         } catch (e) {
             req.flash("error", e.message);
             res.redirect("register");
