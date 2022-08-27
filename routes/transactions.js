@@ -8,6 +8,7 @@ const { transactionSchema } = require("../schemas.js");
 // Functions and Classes
 const catchAsync = require("../utils/CatchAsync");
 const ExpressError = require("../utils/ExpressError");
+const { isLoggedIn } = require("../middleware");
 
 // Models
 const Transaction = require("../models/transaction");
@@ -30,13 +31,18 @@ router.get("/", async (req, res) => {
     }); // We pass transactions to the EJS template
 });
 
-router.get("/new", async (req, res) => {
+router.get("/new", isLoggedIn, async (req, res) => {
+    if (!req.isAuthenticated()) {
+        req.flash("error", "You must be signed in to see this page.");
+        return res.redirect("/login");
+    }
     res.render("transactions/new");
 });
 
 // validateCampground is added as an argument so that data is passed there before continuing to run here.
 router.post(
     "/",
+    isLoggedIn,
     validateCampground,
     catchAsync(async (req, res) => {
         const transaction = new Transaction(req.body.transaction);
@@ -51,9 +57,9 @@ router.get(
     catchAsync(async (req, res, next) => {
         // :id is the id of the transaction
         const transaction = await Transaction.findById(req.params.id).populate("notes"); // Using the id, we find the transaction in the db
-        if(!transaction){
-            req.flash('error', 'Cannot find that campground!');
-            return res.redirect('/transactions/')
+        if (!transaction) {
+            req.flash("error", "Cannot find that campground!");
+            return res.redirect("/transactions/");
         }
         res.render("transactions/show", {
             transaction,

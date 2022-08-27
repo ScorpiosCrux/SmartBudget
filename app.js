@@ -26,7 +26,7 @@ const Note = require("./models/note");
 //Route Requirements
 const transactionRoutes = require("./routes/transactions");
 const noteRoutes = require("./routes/notes");
-const userRoutes = require('./routes/users')
+const userRoutes = require("./routes/users");
 
 mongoose.connect("mongodb://localhost:27017/smart-budget");
 
@@ -81,7 +81,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // Middleware that stores the messaged under res.locals. Make sure this is before routes
+// Used in templates
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user           // E.g. Used in navbar to know whether someone is signed in or not
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     next();
@@ -89,7 +91,7 @@ app.use((req, res, next) => {
 
 app.get("/fakeUser", async (req, res) => {
     const user = new User({ email: "thisIsATestEmail@gmail.com", username: "test" });
-    const newUser = await User.register(user, "notsecure");         // "Registers" a user, hashes, salts, etc
+    const newUser = await User.register(user, "notsecure"); // "Registers" a user, hashes, salts, etc
     res.send(newUser);
 });
 
