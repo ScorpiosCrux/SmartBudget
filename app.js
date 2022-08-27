@@ -83,7 +83,8 @@ passport.deserializeUser(User.deserializeUser());
 // Middleware that stores the messaged under res.locals. Make sure this is before routes
 // Used in templates
 app.use((req, res, next) => {
-    res.locals.currentUser = req.user           // E.g. Used in navbar to know whether someone is signed in or not
+    //console.log(req.session);
+    res.locals.currentUser = req.user; // E.g. Used in navbar to know whether someone is signed in or not
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     next();

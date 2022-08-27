@@ -31,11 +31,7 @@ router.get("/", async (req, res) => {
     }); // We pass transactions to the EJS template
 });
 
-router.get("/new", isLoggedIn, async (req, res) => {
-    if (!req.isAuthenticated()) {
-        req.flash("error", "You must be signed in to see this page.");
-        return res.redirect("/login");
-    }
+router.get("/new", async (req, res) => {
     res.render("transactions/new");
 });
 
