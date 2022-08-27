@@ -10,6 +10,10 @@ const TransactionSchema = new Schema({
   date: String,
   category: String,
   image: String,
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   // we're putting this into here because there's usually not many reviews for a Transaction
   notes: [
     {
