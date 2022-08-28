@@ -42,7 +42,7 @@ router.post(
     validateCampground,
     catchAsync(async (req, res) => {
         const transaction = new Transaction(req.body.transaction);
-        transaction.author = req.user._id;      // Sets the author for the newly created transaction
+        transaction.author = req.user._id; // Sets the author for the newly created transaction
         await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
         req.flash("success", "Successfully created a new transaction!"); // Flashes a message to the user
         res.redirect(`/transactions/${transaction._id}`); // redirect to the transaction we just created
@@ -76,12 +76,16 @@ router.get("/:id/edit", async (req, res) => {
 
 router.put(
     "/:id",
+    isLoggedIn,
     validateCampground,
     catchAsync(async (req, res) => {
         const { id } = req.params;
-        const transaction = await Transaction.findByIdAndUpdate(id, {
-            ...req.body.transaction,
-        }); // We spread the array. Basically making the array/dict args
+        const transaction = await Transaction.findById(id);
+        if (!transaction.author.equals(req.user.id)) {
+            req.flash("error", "You do not have permission to do this action!");
+            return res.redirect(`/transactions/${id}`);
+        }
+        const transaction = await Transaction.findByIdAndUpdate(id, { ...req.body.transaction }); // We spread the array. Basically making the array/dict args
         req.flash("success", "Successfully updated transaction!");
         res.redirect(`/transactions/${transaction._id}`);
     })
