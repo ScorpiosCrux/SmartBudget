@@ -5,7 +5,7 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });       
 
 // Schemas
-const { noteSchema } = require("../schemas.js");
+
 
 // Functions and Classes
 const catchAsync = require("../utils/CatchAsync");
@@ -15,18 +15,8 @@ const ExpressError = require("../utils/ExpressError");
 const Transaction = require("../models/transaction");
 const Note = require("../models/note");
 
-// Helper Middleware
-const validateNote = (req, res, next) => {
-  const { error } = noteSchema.validate(req.body);
-
-  // If there is an error and it's not empty:
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
+// Middleware
+const { validateNote } = require("../middleware");
 
 // Routes
 router.post(
