@@ -10,14 +10,16 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><%= transaction.date %></li>
-                <li class="list-group-item"> Created by: <%= transaction.author.username %></li>
+                <li class="list-group-item">Created by: <%= transaction.author.username %></li>
             </ul>
+            <% if (currentUser && transaction.author.equals(currentUser._id)) { %>
             <div class="card-body">
                 <a href="/transactions/<%=transaction._id %>/edit" class="card-link btn btn-primary">Edit</a>
                 <form class="d-inline" action="/transactions/<%=transaction._id %>?_method=DELETE" method="POST">
                     <button class="btn btn-danger">Delete</button>
                 </form>
             </div>
+            <% } %>
             <div class="card-footer text-muted">2 days ago</div>
         </div>
         <footer>
