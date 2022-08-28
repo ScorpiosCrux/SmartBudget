@@ -45,3 +45,7 @@
 
 - Organizing Categories in a simple approach allowing the user to go into a more complicated category if they'd like. They can drag each transaction into separate categories. This allows the user to not be overwhelmed at the start and if they'd like to get more complicated, they can do so.
 
+
+### Architecture
+- MVC architecture
+
