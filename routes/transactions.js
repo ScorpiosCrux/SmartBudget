@@ -52,7 +52,9 @@ router.get(
     "/:id",
     catchAsync(async (req, res, next) => {
         // :id is the id of the transaction
-        const transaction = await Transaction.findById(req.params.id).populate("notes"); // Using the id, we find the transaction in the db
+        // Using the id, we find the transaction in the db. Gets the notes, and author
+        const transaction = await Transaction.findById(req.params.id).populate("notes").populate("author");
+        console.log(transaction);
         if (!transaction) {
             req.flash("error", "Cannot find that campground!");
             return res.redirect("/transactions/");
