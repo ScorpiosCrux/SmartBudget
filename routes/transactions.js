@@ -42,6 +42,7 @@ router.post(
     validateCampground,
     catchAsync(async (req, res) => {
         const transaction = new Transaction(req.body.transaction);
+        transaction.author = req.user._id;      // Sets the author for the newly created transaction
         await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
         req.flash("success", "Successfully created a new transaction!"); // Flashes a message to the user
         res.redirect(`/transactions/${transaction._id}`); // redirect to the transaction we just created
