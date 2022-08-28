@@ -13,57 +13,24 @@ const catchAsync = require("../utils/CatchAsync");
 const ExpressError = require("../utils/ExpressError");
 
 // Models
-const User = require("../models/user");
 const _ = require("passport-local-mongoose");
 
 // Helper Middleware
 // ...
 
+// Controllers
+const users = require("../controllers/users");
+
 // Routes
-router.get("/register", (req, res) => {
-    res.render("users/register");
-});
+router.get("/register", users.newRegisterForm);
 
-// We don't want the user to be displayed a new page with the error, the error should be flashed
-// TODO: Don't delete the registered data
-router.post(
-    "/register",
-    catchAsync(async (req, res) => {
-        try {
-            const { email, username, password } = req.body;
-            const user = new User({ email, username, password });
-            const registeredUser = await User.register(user, password);
-            req.login(registeredUser, (err) => {
-                if (err) return next(err);
-                req.flash("success", "Welcome to BudgetSmart!");
-                res.redirect("/transactions");
-            });
-        } catch (e) {
-            req.flash("error", e.message);
-            res.redirect("register");
-        }
-    })
-);
+router.post("/register", catchAsync(users.registerNewUser));
 
-router.get("/login", (req, res) => {
-    res.render("users/login");
-});
+router.get("/login", users.newLoginForm);
 
-router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), (req, res) => {
-    req.flash("success", "Welcome Back!");
-    const redirectUrl = req.session.returnTo || "/transactions";            // This only happens when we set the "returnTo" variable in middleware which needs to be called
-    res.redirect(redirectUrl);
-});
+router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), users.loginUser);
 
-router.get("/logout", (req, res, next) => {
-    req.logout(function (err) {
-        if (err) {
-            return next(err);
-        }
-        req.flash("success", "Successfully logged out!");
-        res.redirect("/transactions");
-    });
-});
+router.get("/logout", users.logoutUser);
 
 // Export
 module.exports = router;

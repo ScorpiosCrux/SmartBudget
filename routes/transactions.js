@@ -2,18 +2,12 @@
 const express = require("express");
 const router = express.Router();
 
-// Schemas
-
 // Functions and Classes
 const catchAsync = require("../utils/CatchAsync");
 const { isLoggedIn, isAuthor, validateCampground } = require("../middleware");
 
-// Models
-const Transaction = require("../models/transaction");
-
-// Controller Imports
+// Controllers
 const transactions = require("../controllers/transactions");
-
 
 // Routes
 router.get("/", transactions.index);
