@@ -27,6 +27,7 @@ module.exports.newLoginForm = (req, res) => {
     res.render("users/login");
 };
 
+// Not actually the logic that logs a user in.
 module.exports.loginUser = (req, res) => {
     req.flash("success", "Welcome Back!");
     const redirectUrl = req.session.returnTo || "/transactions"; // This only happens when we set the "returnTo" variable in middleware which needs to be called
