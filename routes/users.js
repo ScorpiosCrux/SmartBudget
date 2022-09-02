@@ -21,14 +21,18 @@ const _ = require("passport-local-mongoose");
 // Controllers
 const users = require("../controllers/users");
 
-// Routes
-router.get("/register", users.newRegisterForm);
+// Routes (order matters)
 
-router.post("/register", catchAsync(users.registerNewUser));
+// prettier-ignore
+router.route("/register")
+    .get(users.newRegisterForm)
+    .post(catchAsync(users.registerNewUser));
 
-router.get("/login", users.newLoginForm);
+// prettier-ignore
+router.route('/login')
+    .get(users.newLoginForm)
+    .post(passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), users.loginUser);
 
-router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), users.loginUser);
 
 router.get("/logout", users.logoutUser);
 

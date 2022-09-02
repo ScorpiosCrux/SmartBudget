@@ -10,15 +10,16 @@ const { isLoggedIn, isAuthor, validateCampground } = require("../middleware");
 const transactions = require("../controllers/transactions");
 
 // Routes (order matters)
-router
-    .route("/")
+
+// prettier-ignore
+router.route("/")
     .get(transactions.index)
     .post(isLoggedIn, validateCampground, catchAsync(transactions.createTransaction));
-    
+
 router.get("/new", isLoggedIn, transactions.newForm);
 
-router
-    .route('/:id')
+// prettier-ignore
+router.route("/:id")
     .get(catchAsync(transactions.showTransaction))
     .put(isLoggedIn, isAuthor, validateCampground, catchAsync(transactions.editTransaction))
     .delete(isLoggedIn, isAuthor, catchAsync(transactions.deleteTransaction));

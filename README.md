@@ -49,3 +49,7 @@
 ### Architecture
 - MVC architecture
 
+
+
+### External Code Taken
+- Starability - https://github.com/LunarLogic/starability 

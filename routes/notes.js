@@ -14,7 +14,7 @@ const { validateNote } = require("../middleware");
 // Controllers
 const notes = require("../controllers/notes");
 
-// Routes
+// Routes (order matters)
 router.post("/", validateNote, catchAsync(notes.createNote));
 
 router.delete("/:noteId", catchAsync(notes.deleteNote));
