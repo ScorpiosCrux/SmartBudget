@@ -17,8 +17,9 @@ const transactions = require("../controllers/transactions");
 router.route("/")
     .get(transactions.index)
     // .post(isLoggedIn, validateCampground, catchAsync(transactions.createTransaction));
-    .post(upload.single('image'), (req, res) => {
-        console.logres.send(req.body, req.file);
+    .post(upload.array('image'), (req, res) => {
+        console.log(req.body, req.files);
+        return res.send("It worked!");
     })
 
 router.get("/new", isLoggedIn, transactions.newForm);
