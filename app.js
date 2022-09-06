@@ -3,9 +3,6 @@ if(process.env.NODE_ENV !== "production"){
     require('dotenv').config();
 }
 
-// This is how you access the env variable
-console.log(process.env.SECRET);
-
 // Library Imports
 const express = require("express"); //express allows us to start up a server and define routes
 const path = require("path"); //allows us to run code from any path
