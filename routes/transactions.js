@@ -1,6 +1,8 @@
 // Library Imports
 const express = require("express");
 const router = express.Router();
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 // Functions and Classes
 const catchAsync = require("../utils/CatchAsync");
@@ -14,7 +16,10 @@ const transactions = require("../controllers/transactions");
 // prettier-ignore
 router.route("/")
     .get(transactions.index)
-    .post(isLoggedIn, validateCampground, catchAsync(transactions.createTransaction));
+    // .post(isLoggedIn, validateCampground, catchAsync(transactions.createTransaction));
+    .post(upload.single('image'), (req, res) => {
+        console.logres.send(req.body, req.file);
+    })
 
 router.get("/new", isLoggedIn, transactions.newForm);
 

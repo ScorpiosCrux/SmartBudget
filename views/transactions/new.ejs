@@ -4,7 +4,7 @@
     <h1 class="text-center"> Add Transaction</h1>
     <div class="col-6 offset-3">
         <!-- Going to /transactions after it posts -->
-        <form action="/transactions" method="POST" novalidate class="validated-form">
+        <form action="/transactions" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
                 <!-- This input with this name allows us to group variables under "transaction" -->
@@ -13,6 +13,7 @@
                     Looks good!
                 </div>
             </div>
+            <input type="file" name="image" id="">
             <div class="mb-3">
                 <label class="form-label" for="cost">Cost</label>
                 <input class="form-control" type="text" id="cost" name="transaction[cost]" required>
