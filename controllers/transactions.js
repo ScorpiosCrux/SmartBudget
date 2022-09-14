@@ -1,6 +1,7 @@
 // Library Imports
 const express = require("express");
 const router = express.Router();
+const { cloudinary } = require("../cloudinary");
 
 // Schemas
 
@@ -26,7 +27,6 @@ module.exports.createTransaction = async (req, res) => {
     transaction.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
     transaction.author = req.user._id; // Sets the author for the newly created transaction
     await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
-    console.log(transaction);
     req.flash("success", "Successfully created a new transaction!"); // Flashes a message to the user
     res.redirect(`/transactions/${transaction._id}`); // redirect to the transaction we just created
 };
@@ -35,7 +35,6 @@ module.exports.showTransaction = async (req, res, next) => {
     // :id is the id of the transaction
     // Using the id, we find the transaction in the db. Gets the notes, and author
     const transaction = await Transaction.findById(req.params.id).populate("notes").populate("author");
-    console.log(transaction);
     if (!transaction) {
         req.flash("error", "Cannot find that campground!");
         return res.redirect("/transactions/");
@@ -57,8 +56,14 @@ module.exports.editTransaction = async (req, res) => {
     const { id } = req.params;
     console.log(req.body);
     const transaction = await Transaction.findByIdAndUpdate(id, { ...req.body.transaction }); // We spread the array. Basically making the array/dict args
-    const images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
-    transaction.images.push(...images); // Spreads the array and appends it to an array
+    const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+    transaction.images.push(...imgs); // Spreads the array and appends it to an array
+    if (req.body.deleteImages) {
+        for (let filename of req.body.deleteImages) {
+            await cloudinary.uploader.destroy(filename);
+        }
+        await transaction.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } });
+    }
     await transaction.save();
     req.flash("success", "Successfully updated transaction!");
     res.redirect(`/transactions/${transaction._id}`);
