@@ -3,9 +3,15 @@ const mongoose = require("mongoose");
 const Note = require("./note");
 const Schema = mongoose.Schema;
 
+const ImageSchema = new Schema({ url: String, filename: String });
+
+// Everytime thumbnail is called, it will run this function.
+ImageSchema.virtual("thumbnail").get(function () {
+    return this.url.replace("/upload", "/upload/w_200");
+});
 // Allows us to edit what the Schema for a Transaction to be
 const TransactionSchema = new Schema({
-    images: [{ url: String, filename: String }],
+    images: [ImageSchema],
     description: String,
     cost: String,
     date: String,

@@ -47,9 +47,11 @@
             </div>
             <div class="mb-3">
                 <% transaction.images.forEach(function(img, i) { %>
-                <img src="<%= img.url %>" class="img-thumbnail" alt="" />
-                <input type="checkbox" name="deleteImages[]" id="image-<%= i %>" value="<%= img.filename %>" />
-                <label for="image-<%= i %>">Delete</label>
+                <div>
+                    <img src="<%= img.thumbnail %>" class="img-thumbnail" alt="" />
+                    <input type="checkbox" name="deleteImages[]" id="image-<%= i %>" value="<%= img.filename %>" />
+                    <label for="image-<%= i %>">Delete</label>
+                </div>
                 <% }) %>
             </div>
             <div class="mb-3">
