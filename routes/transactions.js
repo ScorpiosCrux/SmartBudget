@@ -24,7 +24,7 @@ router.get("/new", isLoggedIn, transactions.newForm);
 // prettier-ignore
 router.route("/:id")
     .get(catchAsync(transactions.showTransaction))
-    .put(isLoggedIn, isAuthor, validateCampground, catchAsync(transactions.editTransaction))
+    .put(isLoggedIn, isAuthor, upload.array('image'), validateCampground, catchAsync(transactions.editTransaction))
     .delete(isLoggedIn, isAuthor, catchAsync(transactions.deleteTransaction));
 
 router.get("/:id/edit", isLoggedIn, isAuthor, transactions.editForm);

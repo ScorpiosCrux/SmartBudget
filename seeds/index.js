@@ -27,7 +27,16 @@ const seedDB = async () => {
             description: transactions.descriptions[random],
             cost: transactions.prices[random],
             date: transactions.dates[random],
-            image: "https://source.unsplash.com/collection/9027607",
+            images: [
+                {
+                    url: "https://res.cloudinary.com/smartbudget/image/upload/v1663120182/SmartBudget/bbd0oyr0vuclvur1ehez.jpg",
+                    filename: "SmartBudget/bbd0oyr0vuclvur1ehez",
+                },
+                {
+                    url: "https://res.cloudinary.com/smartbudget/image/upload/v1663120183/SmartBudget/vvyxcrimsgk5gqusg4ff.png",
+                    filename: "SmartBudget/vvyxcrimsgk5gqusg4ff",
+                },
+            ],
             /* category: String */
         });
         await newTransaction.save();

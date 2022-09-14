@@ -56,6 +56,9 @@ module.exports.editForm = async (req, res) => {
 module.exports.editTransaction = async (req, res) => {
     const { id } = req.params;
     const transaction = await Transaction.findByIdAndUpdate(id, { ...req.body.transaction }); // We spread the array. Basically making the array/dict args
+    const images = req.files.map(f => ({url: f.path, filename: f.filename}))
+    transaction.images.push(...images); // Spreads the array and appends it to an array
+    await transaction.save();
     req.flash("success", "Successfully updated transaction!");
     res.redirect(`/transactions/${transaction._id}`);
 };
