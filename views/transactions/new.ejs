@@ -1,37 +1,33 @@
 <% layout('./layouts/boilerplate') %>
 
 <div class="row">
-    <h1 class="text-center"> Add Transaction</h1>
+    <h1 class="text-center">Add Transaction</h1>
     <div class="col-6 offset-3">
         <!-- Going to /transactions after it posts -->
         <form action="/transactions" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
                 <!-- This input with this name allows us to group variables under "transaction" -->
-                <input class="form-control" type="text" id="description" name="transaction[description]" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
+                <input class="form-control" type="text" id="description" name="transaction[description]" required />
+                <div class="valid-feedback">Looks good!</div>
             </div>
-            <input type="file" name="image" id="" multiple>
             <div class="mb-3">
                 <label class="form-label" for="cost">Cost</label>
-                <input class="form-control" type="text" id="cost" name="transaction[cost]" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
+                <input class="form-control" type="text" id="cost" name="transaction[cost]" required />
+                <div class="valid-feedback">Looks good!</div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="date">Date</label>
-                <input class="form-control" type="text" id="date" name="transaction[date]" required>
+                <input class="form-control" type="text" id="date" name="transaction[date]" required />
+            </div>
+            <div class="mb-3">
+                <label for="images" class="form-label">Upload Images</label>
+                <input class="form-control" type="file" id="images" name="image" multiplegit />
             </div>
             <div class="mb-3">
                 <button class="btn btn-success">Add Transaction</button>
             </div>
         </form>
         <a href="/transactions">Back</a>
-
     </div>
 </div>
-
-
