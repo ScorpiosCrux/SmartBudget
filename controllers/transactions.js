@@ -23,8 +23,10 @@ module.exports.newForm = async (req, res) => {
 
 module.exports.createTransaction = async (req, res) => {
     const transaction = new Transaction(req.body.transaction);
+    transaction.images = req.files.map(f => ({url: f.path, filename: f.filename}));
     transaction.author = req.user._id; // Sets the author for the newly created transaction
     await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
+    console.log(transaction)
     req.flash("success", "Successfully created a new transaction!"); // Flashes a message to the user
     res.redirect(`/transactions/${transaction._id}`); // redirect to the transaction we just created
 };

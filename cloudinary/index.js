@@ -10,8 +10,10 @@ cloudinary.config({
 // This contains the credentials for Cloudinary and then there's some extra config items
 const storage = new CloudinaryStorage({
     cloudinary,
-    folder: "SmartBudget",
-    allowedFormats: ["jpeg", "jpg", "png"],
+    params: {
+        folder: "SmartBudget",
+        allowedFormats: ["jpeg", "jpg", "png"],
+    }
 });
 
 module.exports = {

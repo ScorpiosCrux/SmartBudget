@@ -4,7 +4,9 @@
 <div class="row mb-3">
     <div class="col-6">
         <div class="card mb-3">
-            <img src="<%= transaction.image %>" class="card-img-top" alt="" />
+            <% for (let img of transaction.images) { %> 
+                <img src="<%= img.url %>" class="card-img-top" alt="" />
+            <% } %> 
             <div class="card-body">
                 <h5 class="card-title"><%= transaction.description %></h5>
                 <p class="card-text">$<%= transaction.cost %></p>

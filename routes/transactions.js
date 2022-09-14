@@ -9,7 +9,6 @@ const router = express.Router();
 const multer = require("multer");
 const upload = multer({ storage });
 
-
 // Controllers
 const transactions = require("../controllers/transactions");
 
@@ -18,11 +17,7 @@ const transactions = require("../controllers/transactions");
 // prettier-ignore
 router.route("/")
     .get(transactions.index)
-    // .post(isLoggedIn, validateCampground, catchAsync(transactions.createTransaction));
-    .post(upload.array('image'), (req, res) => {
-        console.log(req.body, req.files);
-        return res.send("It worked!");
-    })
+    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(transactions.createTransaction));
 
 router.get("/new", isLoggedIn, transactions.newForm);
 
