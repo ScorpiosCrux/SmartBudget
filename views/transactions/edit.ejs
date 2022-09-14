@@ -1,26 +1,56 @@
-<% layout('./layouts/boilerplate') %> 
+<% layout('./layouts/boilerplate') %>
 <!-- Going to /transactions/:id but with a put request after we are done editing-->
 <div class="row">
-    <h1 class="text-center"> Edit Transaction</h1>
+    <h1 class="text-center">Edit Transaction</h1>
     <div class="col-6 offset-3">
         <!-- Going to /transactions after it posts -->
-        <form action="/transactions/<%= transaction._id %>?_method=PUT " method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+        <form
+            action="/transactions/<%= transaction._id %>?_method=PUT "
+            method="POST"
+            novalidate
+            class="validated-form"
+            enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
                 <!-- This input with this name allows us to group variables under "transaction" -->
-                <input class="form-control" type="text" id="description" name="transaction[description]" value="<%= transaction.description %> " required>
+                <input
+                    class="form-control"
+                    type="text"
+                    id="description"
+                    name="transaction[description]"
+                    value="<%= transaction.description %> "
+                    required />
             </div>
             <div class="mb-3">
                 <label class="form-label" for="cost">Cost</label>
-                <input class="form-control" type="text" id="cost" name="transaction[cost]" value="<%= transaction.cost %>" required>
+                <input
+                    class="form-control"
+                    type="text"
+                    id="cost"
+                    name="transaction[cost]"
+                    value="<%= transaction.cost %>"
+                    required />
             </div>
             <div class="mb-3">
                 <label class="form-label" for="date">Date</label>
-                <input class="form-control" type="text" id="date" name="transaction[date]" value="<%= transaction.date %>" required>
+                <input
+                    class="form-control"
+                    type="text"
+                    id="date"
+                    name="transaction[date]"
+                    value="<%= transaction.date %>"
+                    required />
             </div>
             <div class="mb-3">
                 <label for="images" class="form-label">Upload Images</label>
                 <input class="form-control" type="file" id="images" name="image" multiple />
+            </div>
+            <div class="mb-3">
+                <% transaction.images.forEach(function(img, i) { %>
+                <img src="<%= img.url %>" class="img-thumbnail" alt="" />
+                <input type="checkbox" name="deleteImages[]" id="image-<%= i %>" value="<%= img.filename %> " />
+                <label for="image-<%= i %>">Delete</label>
+                <% }) %>
             </div>
             <div class="mb-3">
                 <button class="btn btn-success">Update Transaction</button>
@@ -29,4 +59,3 @@
         <a href="/transactions/<% transaction._id %> ">Back To Transaction</a>
     </div>
 </div>
-

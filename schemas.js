@@ -6,7 +6,8 @@ module.exports.transactionSchema = Joi.object({
         description: Joi.string().required(),
         cost: Joi.number().required().min(0),
         date: Joi.string().required(),
-    }).required()
+    }).required(),
+    deleteImages: Joi.array()
 });
 
 module.exports.noteSchema = Joi.object({

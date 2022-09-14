@@ -23,10 +23,10 @@ module.exports.newForm = async (req, res) => {
 
 module.exports.createTransaction = async (req, res) => {
     const transaction = new Transaction(req.body.transaction);
-    transaction.images = req.files.map(f => ({url: f.path, filename: f.filename}));
+    transaction.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
     transaction.author = req.user._id; // Sets the author for the newly created transaction
     await transaction.save(); // since this is an asyc function, "await" for the promise to resolve
-    console.log(transaction)
+    console.log(transaction);
     req.flash("success", "Successfully created a new transaction!"); // Flashes a message to the user
     res.redirect(`/transactions/${transaction._id}`); // redirect to the transaction we just created
 };
@@ -55,8 +55,9 @@ module.exports.editForm = async (req, res) => {
 
 module.exports.editTransaction = async (req, res) => {
     const { id } = req.params;
+    console.log(req.body);
     const transaction = await Transaction.findByIdAndUpdate(id, { ...req.body.transaction }); // We spread the array. Basically making the array/dict args
-    const images = req.files.map(f => ({url: f.path, filename: f.filename}))
+    const images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
     transaction.images.push(...images); // Spreads the array and appends it to an array
     await transaction.save();
     req.flash("success", "Successfully updated transaction!");
