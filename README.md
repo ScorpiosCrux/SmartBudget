@@ -1,4 +1,5 @@
 # Smart Budget
+- This version of Smart Budget is now outdated, the on going version can be found on my personal GitLab. You can find my personal GitLab on my website!
 
 ## Dependencies
 - Bootstrap v.5.0.2
